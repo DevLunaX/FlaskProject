@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% set is_dashboard = active_page == 'dashboard' %}
+{% set is_register = active_page == 'register' %}
+{% set is_reports = active_page == 'reports' %}
+{% set is_appointments = active_page == 'appointments' %}
+
+<div class="flex h-screen w-full overflow-hidden">
+    <aside class="w-20 lg:w-64 bg-slate-900 text-white flex flex-col transition-all duration-300 z-20">
+        <div class="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-slate-800">
+            <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-heart-pulse text-xl"></i>
+            </div>
+            <span class="ml-3 font-bold text-lg hidden lg:block tracking-wide">NutriInst</span>
+        </div>
+
+        <nav class="flex-1 py-6 space-y-2 px-3">
+            <a href="{{ url_for('main.index') }}" class="flex items-center px-3 py-3 {{ 'bg-slate-800 text-white border border-indigo-500/40 shadow-lg shadow-indigo-900/20' if is_dashboard else 'text-slate-400 hover:bg-slate-800 hover:text-white' }} rounded-xl group transition-all">
+                <i class="fa-solid fa-user-doctor w-6 text-center"></i>
+                <span class="ml-3 font-medium hidden lg:block">Consulta Actual</span>
+            </a>
+            
+            <a href="{{ url_for('main.register') }}" class="flex items-center px-3 py-3 {{ 'bg-slate-800 text-white border border-indigo-500/40 shadow-lg shadow-indigo-900/20' if is_register else 'text-slate-400 hover:bg-slate-800 hover:text-white' }} rounded-xl transition-all group">
+                <i class="fa-solid fa-user-plus w-6 text-center group-hover:text-indigo-400 transition-colors"></i>
+                <span class="ml-3 font-medium hidden lg:block">Registrar</span>
+            </a>
+
+            <a href="{{ url_for('main.appointments') }}" class="flex items-center px-3 py-3 {{ 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/20' if is_appointments else 'text-slate-400 hover:bg-slate-800 hover:text-white' }} rounded-xl transition-all group">
+                <i class="fa-solid fa-calendar-check w-6 text-center group-hover:text-indigo-400 transition-colors"></i>
+                <span class="ml-3 font-medium hidden lg:block">Citas</span>
+            </a>
+
+            <a href="{{ url_for('main.reports') }}" class="flex items-center px-3 py-3 {{ 'bg-slate-800 text-white border border-indigo-500/40 shadow-lg shadow-indigo-900/20' if is_reports else 'text-slate-400 hover:bg-slate-800 hover:text-white' }} rounded-xl transition-all group">
+                <i class="fa-solid fa-chart-pie w-6 text-center group-hover:text-indigo-400 transition-colors"></i>
+                <span class="ml-3 font-medium hidden lg:block">Reportes</span>
+            </a>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800">
+            <a href="{{ url_for('main.reports') }}" class="flex items-center justify-center w-full py-2 text-slate-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span class="ml-2 text-sm hidden lg:block">Ver reportes</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col bg-slate-50">
+        <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10">
+            <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-indigo-500 font-semibold">Agenda</p>
+                <h1 class="text-2xl font-bold text-slate-800">Citas y atención</h1>
+                <p class="text-xs text-slate-500">Coordina próximas consultas y registros</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="{{ url_for('main.index') }}" class="px-3 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-medium">Panel</a>
+                <a href="{{ url_for('main.register') }}" class="px-3 py-2 rounded-lg bg-indigo-600 text-white font-semibold shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 text-sm">Registrar paciente</a>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 lg:p-10">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <section class="lg:col-span-4 bg-white border border-slate-100 rounded-2xl shadow-sm p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <i class="fa-solid fa-calendar-plus"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-slate-800">Agendar nueva cita</h2>
+                            <p class="text-xs text-slate-500">Completa datos básicos</p>
+                        </div>
+                    </div>
+
+                    <form class="space-y-3" action="#" method="POST">
+                        <label class="text-sm font-semibold text-slate-700 space-y-1">
+                            Estudiante
+                            <input type="text" class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Nombre o No. Control">
+                        </label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="text-sm font-semibold text-slate-700 space-y-1">
+                                Fecha
+                                <input type="date" class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            </label>
+                            <label class="text-sm font-semibold text-slate-700 space-y-1">
+                                Hora
+                                <input type="time" class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            </label>
+                        </div>
+                        <label class="text-sm font-semibold text-slate-700 space-y-1">
+                            Motivo
+                            <select class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                <option>Valoración inicial</option>
+                                <option>Seguimiento</option>
+                                <option>Control de IMC</option>
+                                <option>Plan alimenticio</option>
+                            </select>
+                        </label>
+                        <label class="text-sm font-semibold text-slate-700 space-y-1">
+                            Notas
+                            <textarea rows="3" class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Instrucciones o recordatorios"></textarea>
+                        </label>
+                        <div class="flex gap-2">
+                            <button type="submit" class="flex-1 py-3 rounded-xl bg-emerald-600 text-white font-semibold shadow-lg shadow-emerald-500/20 hover:bg-emerald-700">Guardar cita</button>
+                            <a href="{{ url_for('main.reports') }}" class="px-4 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50">Ver reportes</a>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="lg:col-span-8 space-y-6">
+                    <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-slate-800">Próximas citas</h3>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">5 hoy</span>
+                                <a href="{{ url_for('main.index') }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">Ir al panel</a>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-left">
+                                <thead class="bg-slate-50 text-slate-500 text-xs uppercase">
+                                    <tr>
+                                        <th class="px-6 py-3">Estudiante</th>
+                                        <th class="px-6 py-3">Fecha</th>
+                                        <th class="px-6 py-3">Motivo</th>
+                                        <th class="px-6 py-3">Estatus</th>
+                                        <th class="px-6 py-3">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-sm">
+                                    <tr>
+                                        <td class="px-6 py-4 font-semibold text-slate-800">Alan Padrón</td>
+                                        <td class="px-6 py-4">05 Feb, 10:00</td>
+                                        <td class="px-6 py-4 text-slate-500">Seguimiento IMC</td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">Confirmada</span></td>
+                                        <td class="px-6 py-4 flex gap-2">
+                                            <button class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200">Reagendar</button>
+                                            <button class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200">Atender</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 font-semibold text-slate-800">Mariana López</td>
+                                        <td class="px-6 py-4">06 Feb, 12:30</td>
+                                        <td class="px-6 py-4 text-slate-500">Plan alimenticio</td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold">Pendiente</span></td>
+                                        <td class="px-6 py-4 flex gap-2">
+                                            <button class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200">Confirmar</button>
+                                            <a href="{{ url_for('main.register') }}" class="px-3 py-1.5 rounded-lg bg-indigo-100 text-indigo-700 text-xs font-semibold hover:bg-indigo-200">Ver ficha</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 font-semibold text-slate-800">Diego Santos</td>
+                                        <td class="px-6 py-4">07 Feb, 09:15</td>
+                                        <td class="px-6 py-4 text-slate-500">Valoración inicial</td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">Reagendada</span></td>
+                                        <td class="px-6 py-4 flex gap-2">
+                                            <button class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200">Reagendar</button>
+                                            <a href="{{ url_for('main.reports') }}" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200">Registrar avance</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+                            <p class="text-xs font-semibold text-slate-500 uppercase">Asistencia</p>
+                            <div class="flex items-end gap-2 mt-2">
+                                <span class="text-3xl font-bold text-slate-900">92%</span>
+                                <span class="text-xs text-emerald-600 font-semibold">Meta 90%</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+                            <p class="text-xs font-semibold text-slate-500 uppercase">Citas de hoy</p>
+                            <div class="flex items-end gap-2 mt-2">
+                                <span class="text-3xl font-bold text-slate-900">12</span>
+                                <span class="text-xs text-slate-500">5 pendientes</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+                            <p class="text-xs font-semibold text-slate-500 uppercase">Tiempo promedio</p>
+                            <div class="flex items-end gap-2 mt-2">
+                                <span class="text-3xl font-bold text-slate-900">35 min</span>
+                                <span class="text-xs text-slate-500">Por cita</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

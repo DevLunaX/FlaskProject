@@ -5,6 +5,7 @@ class Config:
     """Base configuration."""
 
     SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
+    YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
     TESTING = False
 
 

@@ -1,20 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title or "Flask Project" }}</title>
+    <title>{{ title or "NutriTrack Institucional" }}</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-      body { font-family: Arial, sans-serif; margin: 2rem; }
-      header { margin-bottom: 1rem; }
+      body { font-family: 'Inter', sans-serif; }
+      /* Ocultar scrollbar pero permitir scroll */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
   </head>
-  <body>
-    <header>
-      <h1>{{ title or "Flask Project" }}</h1>
-    </header>
-    <main>
-      {% block content %}{% endblock %}
-    </main>
+  <body class="bg-slate-50 text-slate-800 h-screen flex overflow-hidden selection:bg-indigo-100 selection:text-indigo-700">
+    {% block content %}{% endblock %}
   </body>
 </html>

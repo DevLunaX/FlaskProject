@@ -14,6 +14,12 @@ Estructura base para arrancar rápido con Flask usando una factoría de aplicaci
 - Desarrollo: `python run.py`
 - Con CLI: `flask --app run.py ping`
 
+## API de YouTube
+- Endpoints JSON:
+  - `GET /api/youtube/search?q=<texto>&max=6`
+  - `GET /api/youtube/recommendations?videoId=<id>&max=6`
+- Opcional: define `YOUTUBE_API_KEY` para usar la API real. Sin clave, la app responde con datos de ejemplo locales para desarrollo y pruebas.
+
 ## Pruebas
 - Ejecuta `pytest` para correr los tests.
 
