@@ -109,13 +109,13 @@ La estructura puede variar según tu implementación, pero típicamente:
 Agrega tus capturas en una carpeta llamada `screenshots/` en la raíz del proyecto y enlázalas aquí.
 
 **(Placeholder) Pantalla principal**
-![Pantalla principal](screenshots/home.png)
+![Pantalla principal](screenshots/Main.png)
 
 **(Placeholder) Funcionalidad 1**
-![Funcionalidad 1](screenshots/feature-1.png)
+![Funcionalidad 1](screenshots/MainNutriologa.png)
 
 **(Placeholder) Funcionalidad 2**
-![Funcionalidad 2](screenshots/feature-2.png)
+![Funcionalidad 2](screenshots/MainUsuario.png)
 
 > Puedes renombrar los archivos o agregar más capturas según necesites.
 
