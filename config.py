@@ -5,18 +5,24 @@ class Config:
     """Base configuration."""
 
     SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
-    YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+    YOUTUBE_API_KEY = os.getenv("AIzaSyDQ97saYaDsSqqBmEPtbFFaYqiiTJyTjcw")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
     TESTING = False
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
     FLASK_ENV = "development"
+    # Usa la variable de entorno DATABASE_URL si existe (ej. Supabase), si no, usa SQLite local
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///dev.db")
 
 
 class ProductionConfig(Config):
     DEBUG = False
     FLASK_ENV = "production"
+    # En producción, requerimos que DATABASE_URL esté configurada
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
 
 class TestingConfig(Config):

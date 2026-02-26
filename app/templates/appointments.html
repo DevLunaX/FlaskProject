@@ -16,7 +16,7 @@
         </div>
 
         <nav class="flex-1 py-6 space-y-2 px-3">
-            <a href="{{ url_for('main.index') }}" class="flex items-center px-3 py-3 {{ 'bg-slate-800 text-white border border-indigo-500/40 shadow-lg shadow-indigo-900/20' if is_dashboard else 'text-slate-400 hover:bg-slate-800 hover:text-white' }} rounded-xl group transition-all">
+            <a href="{{ url_for('main.dashboard') }}" class="flex items-center px-3 py-3 {{ 'bg-slate-800 text-white border border-indigo-500/40 shadow-lg shadow-indigo-900/20' if is_dashboard else 'text-slate-400 hover:bg-slate-800 hover:text-white' }} rounded-xl group transition-all">
                 <i class="fa-solid fa-user-doctor w-6 text-center"></i>
                 <span class="ml-3 font-medium hidden lg:block">Consulta Actual</span>
             </a>
@@ -53,7 +53,7 @@
                 <p class="text-xs text-slate-500">Coordina próximas consultas y registros</p>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ url_for('main.index') }}" class="px-3 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-medium">Panel</a>
+                <a href="{{ url_for('main.dashboard') }}" class="px-3 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-medium">Panel</a>
                 <a href="{{ url_for('main.register') }}" class="px-3 py-2 rounded-lg bg-indigo-600 text-white font-semibold shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 text-sm">Registrar paciente</a>
             </div>
         </header>
@@ -112,7 +112,7 @@
                             <h3 class="text-lg font-bold text-slate-800">Próximas citas</h3>
                             <div class="flex items-center gap-2">
                                 <span class="text-xs px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">5 hoy</span>
-                                <a href="{{ url_for('main.index') }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">Ir al panel</a>
+                                <a href="{{ url_for('main.dashboard') }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">Ir al panel</a>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
@@ -127,36 +127,46 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 text-sm">
+                                    {% for appointment in appointments %}
                                     <tr>
-                                        <td class="px-6 py-4 font-semibold text-slate-800">Alan Padrón</td>
-                                        <td class="px-6 py-4">05 Feb, 10:00</td>
-                                        <td class="px-6 py-4 text-slate-500">Seguimiento IMC</td>
-                                        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">Confirmada</span></td>
+                                        <td class="px-6 py-4 font-semibold text-slate-800">
+                                            {{ appointment.patient.name }}
+                                            <br>
+                                            <span class="text-xs text-slate-400 font-normal">{{ appointment.patient.email }}</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ appointment.date_time.strftime('%d %b, %H:%M') }}
+                                        </td>
+                                        <td class="px-6 py-4 text-slate-500">{{ appointment.reason }}</td>
+                                        <td class="px-6 py-4">
+                                            {% if appointment.status == 'confirmed' %}
+                                                <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">Confirmada</span>
+                                            {% elif appointment.status == 'pending' %}
+                                                <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold">Pendiente</span>
+                                            {% elif appointment.status == 'completed' %}
+                                                <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">Completada</span>
+                                            {% else %}
+                                                <span class="px-3 py-1 rounded-full bg-slate-50 text-slate-700 text-xs font-semibold">{{ appointment.status }}</span>
+                                            {% endif %}
+                                        </td>
                                         <td class="px-6 py-4 flex gap-2">
-                                            <button class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200">Reagendar</button>
-                                            <button class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200">Atender</button>
+                                            {% if appointment.status == 'pending' %}
+                                            <button onclick="updateStatus({{ appointment.id }}, 'confirmed')" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200">Confirmar</button>
+                                            <button onclick="deleteAppointment({{ appointment.id }})" class="px-3 py-1.5 rounded-lg bg-red-100 text-red-700 text-xs font-semibold hover:bg-red-200">Cancelar</button>
+                                            {% elif appointment.status == 'confirmed' %}
+                                            <button onclick="updateStatus({{ appointment.id }}, 'completed')" class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 text-xs font-semibold hover:bg-blue-200">Completar</button>
+                                            {% else %}
+                                            <span class="text-xs text-slate-400">Archivada</span>
+                                            {% endif %}
                                         </td>
                                     </tr>
+                                    {% else %}
                                     <tr>
-                                        <td class="px-6 py-4 font-semibold text-slate-800">Mariana López</td>
-                                        <td class="px-6 py-4">06 Feb, 12:30</td>
-                                        <td class="px-6 py-4 text-slate-500">Plan alimenticio</td>
-                                        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold">Pendiente</span></td>
-                                        <td class="px-6 py-4 flex gap-2">
-                                            <button class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200">Confirmar</button>
-                                            <a href="{{ url_for('main.register') }}" class="px-3 py-1.5 rounded-lg bg-indigo-100 text-indigo-700 text-xs font-semibold hover:bg-indigo-200">Ver ficha</a>
+                                        <td colspan="5" class="px-6 py-8 text-center text-slate-400">
+                                            No hay citas registradas.
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="px-6 py-4 font-semibold text-slate-800">Diego Santos</td>
-                                        <td class="px-6 py-4">07 Feb, 09:15</td>
-                                        <td class="px-6 py-4 text-slate-500">Valoración inicial</td>
-                                        <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">Reagendada</span></td>
-                                        <td class="px-6 py-4 flex gap-2">
-                                            <button class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200">Reagendar</button>
-                                            <a href="{{ url_for('main.reports') }}" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200">Registrar avance</a>
-                                        </td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -190,4 +200,34 @@
         </div>
     </main>
 </div>
+
+<script>
+    async function updateStatus(id, newStatus) {
+        if(!confirm('¿Cambiar estado a ' + newStatus + '?')) return;
+        
+        try {
+            const res = await fetch('/api/appointments/' + id, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({status: newStatus})
+            });
+            if(res.ok) location.reload();
+            else alert('Error al actualizar');
+        } catch(e) {
+             alert('Error de conexión');
+        }
+    }
+
+    async function deleteAppointment(id) {
+        if(!confirm('¿Eliminar esta cita permanentemente?')) return;
+        
+        try {
+            const res = await fetch('/api/appointments/' + id, { method: 'DELETE' });
+            if(res.ok) location.reload();
+            else alert('Error al eliminar');
+        } catch(e) {
+             alert('Error de conexión');
+        }
+    }
+</script>
 {% endblock %}

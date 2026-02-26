@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen w-full bg-slate-50 flex flex-col">
+    <!-- Header -->
+    <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10 sticky top-0">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-teal-500/30">
+                <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-slate-800">Mi Perfil Nutricional</h1>
+                <p class="text-xs text-slate-500">Portal del Alumno</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="{{ url_for('main.appointments_request') }}" class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-600 text-white hover:bg-teal-700 transition-colors text-sm font-semibold shadow-lg shadow-teal-500/30">
+                <i class="fa-solid fa-calendar-plus"></i>
+                Agendar Cita
+            </a>
+            <div class="h-10 w-10 bg-slate-200 rounded-full bg-cover bg-center border-2 border-white shadow-sm" style="background-image: url('https://ui-avatars.com/api/?name={{ user.name | urlencode }}&background=0D9488&color=fff');"></div>
+            <a href="{{ url_for('main.home') }}" class="text-slate-400 hover:text-red-500 transition-colors ml-2" title="Cerrar Sesión">
+                <i class="fa-solid fa-right-from-bracket text-lg"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-6 lg:p-10 max-w-7xl mx-auto w-full">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Sidebar Perfil -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Tarjeta de Usuario -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-teal-500 to-emerald-400"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="w-24 h-24 mx-auto bg-white rounded-full p-1 shadow-lg mb-4">
+                            <div class="w-full h-full rounded-full bg-cover bg-center" style="background-image: url('https://ui-avatars.com/api/?name={{ user.name | urlencode }}&background=0D9488&color=fff&size=128');"></div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-800">{{ user.name }}</h2>
+                        <p class="text-teal-600 font-medium text-sm mb-1">{{ user.career or 'Estudiante' }}</p>
+                        <p class="text-slate-500 text-sm mb-6">{{ user.email }}</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-6">
+                            <div>
+                                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Matrícula</p>
+                                <p class="font-mono text-slate-800 font-medium">{{ user.control_number or 'N/A' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Edad</p>
+                                <p class="text-slate-800 font-medium">{{ user.age or '--' }} años</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Última Medición -->
+                {% if consultations %}
+                {% set last_consultation = consultations[0] %}
+                <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl shadow-xl p-6 text-white relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-teal-500 rounded-full blur-3xl opacity-20"></div>
+                    
+                    <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-weight-scale text-teal-400"></i>
+                        Última Medición
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Peso</p>
+                            <p class="text-3xl font-bold">{{ last_consultation.weight or '--' }} <span class="text-sm font-normal text-slate-400">kg</span></p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">IMC</p>
+                            <p class="text-3xl font-bold text-teal-400">{{ last_consultation.bmi or '--' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Estatura</p>
+                            <p class="text-xl font-semibold">{{ last_consultation.height or '--' }} <span class="text-sm font-normal text-slate-400">m</span></p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Fecha</p>
+                            <p class="text-sm font-medium mt-1">{{ last_consultation.date_time.strftime('%d %b, %Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 text-center">
+                    <div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <p class="text-slate-500 text-sm">Aún no tienes mediciones registradas.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Contenido Principal -->
+            <div class="lg:col-span-8 space-y-8">
+                
+                <!-- Plan Actual -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-apple-whole text-emerald-500"></i>
+                            Plan Nutricional Actual
+                        </h3>
+                        {% if consultations and consultations[0].diet_plan %}
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold uppercase tracking-wider">Activo</span>
+                        {% endif %}
+                    </div>
+                    <div class="p-8">
+                        {% if consultations and consultations[0].diet_plan %}
+                        <div class="mb-6">
+                            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Plan Asignado</h4>
+                            <p class="text-xl font-bold text-slate-800">{{ consultations[0].diet_plan }}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Diagnóstico / Notas</h4>
+                            <p class="text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100">{{ consultations[0].diagnosis or 'Sin diagnóstico registrado.' }}</p>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-8">
+                            <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 text-2xl">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-700 mb-2">Sin plan activo</h4>
+                            <p class="text-slate-500 mb-6">Agenda una cita con tu nutriólogo para recibir un plan personalizado.</p>
+                            <a href="{{ url_for('main.appointments_request') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors font-semibold">
+                                <i class="fa-solid fa-calendar-plus"></i> Agendar Cita
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Historial de Citas -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-indigo-500"></i>
+                            Mis Citas
+                        </h3>
+                    </div>
+                    <div class="p-0">
+                        {% if appointments %}
+                        <div class="divide-y divide-slate-100">
+                            {% for apt in appointments %}
+                            <div class="p-6 hover:bg-slate-50 transition-colors flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg
+                                        {% if apt.status == 'pending' %} bg-amber-100 text-amber-600
+                                        {% elif apt.status == 'completed' %} bg-emerald-100 text-emerald-600
+                                        {% elif apt.status == 'cancelled' %} bg-red-100 text-red-600
+                                        {% else %} bg-blue-100 text-blue-600 {% endif %}">
+                                        {{ apt.date_time.strftime('%d') }}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-800">{{ apt.date_time.strftime('%B %Y, %H:%M') }}</p>
+                                        <p class="text-sm text-slate-500">{{ apt.reason }}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
+                                        {% if apt.status == 'pending' %} bg-amber-50 text-amber-600 border border-amber-200
+                                        {% elif apt.status == 'completed' %} bg-emerald-50 text-emerald-600 border border-emerald-200
+                                        {% elif apt.status == 'cancelled' %} bg-red-50 text-red-600 border border-red-200
+                                        {% else %} bg-blue-50 text-blue-600 border border-blue-200 {% endif %}">
+                                        {% if apt.status == 'pending' %} Pendiente
+                                        {% elif apt.status == 'completed' %} Completada
+                                        {% elif apt.status == 'cancelled' %} Cancelada
+                                        {% else %} {{ apt.status }} {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-12">
+                            <p class="text-slate-500">No tienes citas registradas.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -33,7 +33,7 @@
         
         <div class="max-w-xl mx-auto w-full">
             <div class="mb-3 flex items-center gap-2 text-sm">
-                <a href="{{ url_for('main.index') }}" class="text-indigo-600 hover:text-indigo-700 font-semibold flex items-center gap-1">
+                <a href="{{ url_for('main.dashboard') }}" class="text-indigo-600 hover:text-indigo-700 font-semibold flex items-center gap-1">
                     <i class="fa-solid fa-arrow-left"></i> Ir al panel
                 </a>
                 <span class="text-slate-300">•</span>
@@ -41,98 +41,184 @@
             </div>
 
             <div class="mb-10">
-                <h1 class="text-3xl font-bold text-slate-900">Registrar Paciente</h1>
-                <p class="text-slate-500 mt-2">Ingresa los datos básicos para crear el expediente.</p>
+                <h1 class="text-3xl font-bold text-slate-900">Gestión de Pacientes</h1>
+                <p class="text-slate-500 mt-2">Registra nuevos pacientes o administra los existentes.</p>
             </div>
 
-            <form action="{{ url_for('main.register') }}" method="GET" class="space-y-6">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Tabs de navegación interna -->
+             <div class="mb-8 border-b border-slate-200">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg text-indigo-600 border-indigo-600 active" id="register-tab" data-tabs-target="#register" type="button" role="tab" onclick="switchTab('register')">Nuevo Registro</button>
+                    </li>
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-slate-600 hover:border-slate-300" id="list-tab" data-tabs-target="#list" type="button" role="tab" onclick="switchTab('list'); loadPatients();">Lista de Pacientes</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="register-content">
+                <form id="registerForm" class="space-y-6" onsubmit="registerPatient(event)">
+                    
                     <div class="space-y-2">
-                        <label class="text-sm font-semibold text-slate-700">Número de Control</label>
+                        <label class="text-sm font-semibold text-slate-700">Nombre Completo</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                                <i class="fa-solid fa-id-card"></i>
+                                <i class="fa-solid fa-user"></i>
                             </span>
-                            <input type="text" name="control" placeholder="Ej. 1224100695" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all outline-none" required>
+                            <input type="text" id="p_name" placeholder="Nombre y Apellidos" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all outline-none" required>
                         </div>
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-sm font-semibold text-slate-700">Tipo de Usuario</label>
-                        <select name="tipo" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none outline-none appearance-none">
-                            <option value="alumno">Alumno</option>
-                            <option value="docente">Docente</option>
-                            <option value="admin">Administrativo</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-700">Nombre Completo</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                            <i class="fa-solid fa-user"></i>
-                        </span>
-                        <input type="text" name="nombre" placeholder="Nombre y Apellidos" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all outline-none" required>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-sm font-semibold text-slate-700">Edad</label>
-                        <input type="number" name="edad" placeholder="18" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-center">
-                    </div>
-                    
-                    <div class="space-y-2 col-span-2">
-                        <label class="text-sm font-semibold text-slate-700">Sexo</label>
-                        <div class="flex gap-4">
-                            <label class="flex-1 cursor-pointer">
-                                <input type="radio" name="sexo" value="H" class="peer sr-only">
-                                <div class="text-center py-3 border border-slate-200 rounded-xl peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 hover:bg-slate-50 transition-all">
-                                    Hombre
-                                </div>
-                            </label>
-                            <label class="flex-1 cursor-pointer">
-                                <input type="radio" name="sexo" value="M" class="peer sr-only">
-                                <div class="text-center py-3 border border-slate-200 rounded-xl peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 hover:bg-slate-50 transition-all">
-                                    Mujer
-                                </div>
-                            </label>
+                        <label class="text-sm font-semibold text-slate-700">Correo Institucional (Email)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-envelope"></i>
+                            </span>
+                            <input type="email" id="p_email" placeholder="correo@institucion.edu" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all outline-none" required>
                         </div>
                     </div>
-                </div>
 
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-700">Carrera o Departamento</label>
-                    <div class="relative">
-                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                        </span>
-                        <select name="carrera" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none">
-                            <option value="" disabled selected>Selecciona una opción...</option>
-                            <option>Ing. Desarrollo de Software</option>
-                            <option>Ing. Sistemas Computacionales</option>
-                            <option>Ing. Industrial</option>
-                            <option>Lic. Administración</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">Rol</label>
+                            <select id="p_role" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none outline-none appearance-none">
+                                <option value="paciente">Paciente/Alumno</option>
+                                <option value="docente">Docente</option>
+                            </select>
                         </div>
                     </div>
-                </div>
 
-                <div class="pt-6 flex gap-4">
-                    <a href="{{ url_for('main.index') }}" class="w-1/3 text-center py-3.5 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-colors">
-                        Cancelar
-                    </a>
-                    <button type="submit" class="w-2/3 py-3.5 rounded-xl bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-500/40 hover:bg-indigo-700 hover:-translate-y-1 transition-all">
-                        Crear Expediente <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </button>
-                </div>
+                    <div class="pt-6 border-t border-slate-100 flex items-center justify-end gap-4">
+                        <button type="button" class="px-6 py-3 rounded-xl text-slate-500 font-semibold hover:bg-slate-50 transition-colors">Cancelar</button>
+                        <button type="submit" class="px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transform hover:-translate-y-0.5 transition-all">
+                            Guardar Paciente
+                        </button>
+                    </div>
+                </form>
+                <div id="msg" class="mt-4 text-center font-bold"></div>
+            </div>
 
-            </form>
+            <div id="list-content" class="hidden">
+                 <div class="overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Nombre</th>
+                                <th scope="col" class="px-6 py-3">Email</th>
+                                <th scope="col" class="px-6 py-3">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientsTableBody">
+                            <!-- JS fill -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
+
+<script>
+    function switchTab(tab) {
+        if(tab === 'register') {
+            document.getElementById('register-content').classList.remove('hidden');
+            document.getElementById('list-content').classList.add('hidden');
+            document.getElementById('register-tab').classList.add('text-indigo-600', 'border-indigo-600');
+            document.getElementById('list-tab').classList.remove('text-indigo-600', 'border-indigo-600');
+        } else {
+            document.getElementById('register-content').classList.add('hidden');
+            document.getElementById('list-content').classList.remove('hidden');
+            document.getElementById('list-tab').classList.add('text-indigo-600', 'border-indigo-600');
+            document.getElementById('register-tab').classList.remove('text-indigo-600', 'border-indigo-600');
+        }
+    }
+
+    async function registerPatient(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const msg = document.getElementById('msg');
+        
+        btn.disabled = true;
+        msg.textContent = "Guardando...";
+        msg.className = "mt-4 text-center font-bold text-slate-500";
+
+        const data = {
+            name: document.getElementById('p_name').value,
+            email: document.getElementById('p_email').value,
+            role: document.getElementById('p_role').value
+        };
+
+        try {
+            const res = await fetch('/api/users', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            if(res.ok) {
+                msg.textContent = "Paciente registrado con éxito";
+                msg.className = "mt-4 text-center font-bold text-green-600";
+                e.target.reset();
+            } else {
+                const err = await res.json();
+                msg.textContent = "Error: " + (err.message || 'Error desconocido');
+                msg.className = "mt-4 text-center font-bold text-red-500";
+            }
+        } catch(err) {
+            msg.textContent = "Error de conexión";
+            msg.className = "mt-4 text-center font-bold text-red-500";
+        }
+        btn.disabled = false;
+    }
+
+    async function loadPatients() {
+        const tbody = document.getElementById('patientsTableBody');
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Cargando...</td></tr>';
+        
+        try {
+            const res = await fetch('/api/patients'); // Endpoint que creamos
+            const patients = await res.json();
+            
+            tbody.innerHTML = '';
+            if(patients.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4">No hay pacientes registrados</td></tr>';
+                 return;
+            }
+
+            patients.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "bg-white border-b hover:bg-gray-50";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${p.name}</td>
+                    <td class="px-6 py-4">${p.email}</td>
+                    <td class="px-6 py-4">
+                        <button onclick="deletePatient(${p.id})" class="font-medium text-red-600 hover:underline">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+        } catch(err) {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-red-500">Error al cargar listado</td></tr>';
+        }
+    }
+
+    async function deletePatient(id) {
+        if(!confirm('¿Estás seguro de eliminar este paciente y todo su historial?')) return;
+        
+        try {
+             const res = await fetch('/api/patients/' + id, { method: 'DELETE' });
+             if(res.ok) {
+                 loadPatients(); // Recargar lista
+             } else {
+                 alert('Error al eliminar');
+             }
+        } catch(e) {
+            alert('Error de conexión');
+        }
+    }
+</script>
 {% endblock %}
